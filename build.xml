@@ -1,4 +1,4 @@
-<project name="example" default="compile">
+<project name="AIProjecct" default="jar">
     
     <property name="src.dir" location="src"/>
     <property name="build.dir" location="build/classes"/>
@@ -21,8 +21,7 @@
     
     <target name="run" depends="jar">
         <java jar="DataScanner.jar" fork="true">
-            <arg line="Data"/>
-            <arg line="/home/jimmy/bookmarks.html"/>
+            <arg line="Data /home/jimmy/bookmarks.html"/>
         </java>
     </target>
     <target name="clean" description="Removes previous build">
@@ -31,4 +30,5 @@
             <fileset file="database.db"/>
         </delete>
     </target>
+	
 </project>

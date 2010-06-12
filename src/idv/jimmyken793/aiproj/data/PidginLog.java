@@ -6,14 +6,14 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PidginConversationLog extends Data {
+public class PidginLog extends Data {
 	public static void main(String[] args) throws IOException {
 		if(args.length>0)
-			System.out.println(new PidginConversationLog(args[0]).getData());
+			System.out.println(new PidginLog(args[0]).getData());
 	}
 	private String filename;
 
-	public PidginConversationLog(String filename) {
+	public PidginLog(String filename) {
 		super(filename);
 		this.filename = filename;
 	}

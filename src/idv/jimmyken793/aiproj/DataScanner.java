@@ -2,13 +2,20 @@ package idv.jimmyken793.aiproj;
 
 import idv.jimmyken793.aiproj.data.Data;
 import idv.jimmyken793.aiproj.database.Database;
+import idv.jimmyken793.io.FileIO;
 
 import java.io.IOException;
 import java.sql.SQLException;
-
+import java.util.ArrayList;
+import java.util.Iterator;
+/**
+ * 
+ * @author jimmy
+ *
+ */
 public class DataScanner {
-
 	/**
+	 * 
 	 * @param args
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
@@ -20,7 +27,15 @@ public class DataScanner {
 			return;
 		Database d = new Database();
 		for (int i = 1; i < args.length; i++) {
-			parseFile(Data.constructData(args[0], args[i]), d);
+			ArrayList<String> files = FileIO.FileList(args[i]);
+			{
+				Iterator<String> it = files.iterator();
+				if (it.hasNext()) {
+					for (String filename = it.next(); it.hasNext(); filename = it.next()) {
+						parseFile(Data.constructData(args[0], filename), d);
+					}
+				}
+			}
 		}
 		d.close();
 		// System.out.print(new
@@ -34,15 +49,24 @@ public class DataScanner {
 		if (data.length == 0)
 			return;
 		int length = data.length - 1;
+		int spos = -1;
 		for (int i = 0; i < length - 1; i++) {
 			String w2 = dataString.substring(i, i + 2);
 			if (Unicode.isChinese(w2)) {
-				d.addCount(w2);
+				d.countWord(w2);
+				if (spos == -1) {
+					spos = i;
+				}
+			} else {
+				if (spos != -1) {
+					d.countScentence(dataString.substring(spos, i + 1));
+					spos = -1;
+				}
 			}
 			if (i != length - 2) {
 				String w3 = dataString.substring(i, i + 3);
 				if (Unicode.isChinese(w3)) {
-					d.addCount(w3);
+					d.countWord(w3);
 				}
 			}
 		}
