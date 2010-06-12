@@ -15,8 +15,8 @@ public class FileIO {
 		fs.write(content);
 		fs.close();
 	}
-	public static byte[] readFile(String filename) throws IOException{
-		FileInputStream is=new FileInputStream(filename);
+	public static String readFile(String filename) throws IOException{
+		FileInputStream is=new FileInputStream(filename); 
 		byte[] buf = new byte[65535];
 		byte[] content = new byte[65535];
 		int ch;
@@ -38,7 +38,7 @@ public class FileIO {
 		byte[] out = new byte[size];
 		System.arraycopy(content, 0, out, 0, size);
 		is.close();
-		return out;
+		return new String(out);
 	}
 	public static void ensureDirectory(String filename){
 		File f=new File(filename);

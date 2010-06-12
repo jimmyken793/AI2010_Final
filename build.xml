@@ -1,0 +1,34 @@
+<project name="example" default="compile">
+    
+    <property name="src.dir" location="src"/>
+    <property name="build.dir" location="build/classes"/>
+    <target name="prepare">
+        <mkdir dir="build/classes"/>
+        <mkdir dir="${build.dir}"/>
+    </target>
+    
+    <target name="compile" depends="prepare">
+        <javac srcdir="${src.dir}" destdir="${build.dir}"/>
+    </target>
+    <target name="jar" depends="compile">
+        <jar destfile="DataScanner.jar" basedir="build/classes">
+            <zipfileset src="lib/sqlitejdbc-v056.jar"/>
+            <manifest>
+                <attribute name="Main-Class" value="idv.jimmyken793.aiproj.DataScanner"/>
+            </manifest>
+        </jar>
+    </target>
+    
+    <target name="run" depends="jar">
+        <java jar="DataScanner.jar" fork="true">
+            <arg line="Data"/>
+            <arg line="/home/jimmy/bookmarks.html"/>
+        </java>
+    </target>
+    <target name="clean" description="Removes previous build">
+        <delete verbose="true">
+            <fileset dir="${build.dir}"/>
+            <fileset file="database.db"/>
+        </delete>
+    </target>
+</project>
