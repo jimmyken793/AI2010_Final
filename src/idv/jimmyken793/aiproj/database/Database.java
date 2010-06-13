@@ -11,64 +11,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Map.Entry;
-
+/**
+ * 
+ * @author jimmy
+ *
+ */
 public class Database {
-	protected Connection connection;
-	protected Statement statement;
-	private CounterCache count2;
-	private CounterCache count3;
-	private CounterCache countS;
-
-	public Database() throws ClassNotFoundException, SQLException {
-		Class.forName("org.sqlite.JDBC");
-		// Class.forName("com.mysql.jdbc.Driver");
-		connection = DriverManager.getConnection("jdbc:sqlite:database.db");
-		// connection =
-		// DriverManager.getConnection("jdbc:mysql://localhost/AI_Final?useUnicode=true&characterEncoding=Utf8",
-		// "ai", "12345");
-		connection.setAutoCommit(false);
-		statement = connection.createStatement();
-		statement.executeUpdate("CREATE TABLE IF NOT EXISTS Data2 (count INTEGER,str TEXT PRIMARY KEY)");
-		statement.executeUpdate("CREATE TABLE IF NOT EXISTS Data3 (count INTEGER,str TEXT PRIMARY KEY)");
-		statement.executeUpdate("CREATE TABLE IF NOT EXISTS DataS (count INTEGER,str TEXT PRIMARY KEY)");
-		count2 = new CounterCache("Data2", connection);
-		count3 = new CounterCache("Data3", connection);
-		countS = new CounterCache("DataS", connection);
-	}
-
-	public void countWord(String id) throws SQLException {
-		if (id.length() == 2) {
-			count2.addCount(id);
-		} else if (id.length() == 3) {
-			count3.addCount(id);
-		}
-	}
-
-	public void countScentence(String id) throws SQLException {
-		countS.addCount(id);
-	}
-
-	public void close() throws SQLException {
-		count2.flush();
-		count3.flush();
-		countS.flush();
-		connection.commit();
-		connection.close();
-	}
-
-	public void dump() throws SQLException {
-		Statement stat = connection.createStatement();
-		ResultSet rs = stat.executeQuery("select * from Data;");
-		while (rs.next()) {
-			System.out.println("id = " + rs.getInt("id"));
-			System.out.println("count = " + rs.getInt("count"));
-			System.out.println("Str = " + rs.getString("str"));
-		}
-		rs.close();
-	}
-
 	private class CounterCache {
-		protected Connection connection;
 		String tableName;
 		private Statement statement;
 		private PreparedStatement insertData;
@@ -100,16 +49,6 @@ public class Database {
 				existed_word.add(id);
 			} else {
 				increment.put(id, increment.get(id) + 1);
-			}
-		}
-
-		public void addCount(String id, int count) {
-			if (!existed_word.contains(id)) {
-				insertion.add(id);
-				increment.put(id, count);
-				existed_word.add(id);
-			} else {
-				increment.put(id, increment.get(id) + count);
 			}
 		}
 
@@ -152,6 +91,60 @@ public class Database {
 			}
 			increData.executeBatch();
 		}
+	}
+	protected Connection connection;
+	protected Statement statement;
+	private CounterCache count2;
+	private CounterCache count3;
+
+	private CounterCache countS;
+
+	public Database() throws ClassNotFoundException, SQLException {
+		Class.forName("org.sqlite.JDBC");
+		// Class.forName("com.mysql.jdbc.Driver");
+		connection = DriverManager.getConnection("jdbc:sqlite:database.db");
+		// connection =
+		// DriverManager.getConnection("jdbc:mysql://localhost/AI_Final?useUnicode=true&characterEncoding=Utf8",
+		// "ai", "12345");
+		connection.setAutoCommit(false);
+		statement = connection.createStatement();
+		statement.executeUpdate("CREATE TABLE IF NOT EXISTS Data2 (count INTEGER,str TEXT PRIMARY KEY)");
+		statement.executeUpdate("CREATE TABLE IF NOT EXISTS Data3 (count INTEGER,str TEXT PRIMARY KEY)");
+		statement.executeUpdate("CREATE TABLE IF NOT EXISTS DataS (count INTEGER,str TEXT PRIMARY KEY)");
+		count2 = new CounterCache("Data2", connection);
+		count3 = new CounterCache("Data3", connection);
+		countS = new CounterCache("DataS", connection);
+	}
+
+	public void close() throws SQLException {
+		count2.flush();
+		count3.flush();
+		countS.flush();
+		connection.commit();
+		connection.close();
+	}
+
+	public void countScentence(String id) throws SQLException {
+		countS.addCount(id);
+	}
+
+	public void countWord(String id) throws SQLException {
+		if (id.length() == 2) {
+			count2.addCount(id);
+		} else if (id.length() == 3) {
+			count3.addCount(id);
+		}
+	}
+
+	public void dump() throws SQLException {
+		Statement stat = connection.createStatement();
+		ResultSet rs = stat.executeQuery("select * from Data;");
+		while (rs.next()) {
+			System.out.println("id = " + rs.getInt("id"));
+			System.out.println("count = " + rs.getInt("count"));
+			System.out.println("Str = " + rs.getString("str"));
+		}
+		rs.close();
 	}
 
 }

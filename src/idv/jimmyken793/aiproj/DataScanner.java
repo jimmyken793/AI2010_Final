@@ -1,6 +1,7 @@
 package idv.jimmyken793.aiproj;
 
 import idv.jimmyken793.aiproj.data.Data;
+import idv.jimmyken793.aiproj.data.InputData;
 import idv.jimmyken793.aiproj.database.Database;
 import idv.jimmyken793.io.FileIO;
 
@@ -8,10 +9,11 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
+
 /**
  * 
  * @author jimmy
- *
+ * 
  */
 public class DataScanner {
 	/**
@@ -28,19 +30,21 @@ public class DataScanner {
 		Database d = new Database();
 		for (int i = 1; i < args.length; i++) {
 			ArrayList<String> files = FileIO.FileList(args[i]);
-			{
-				Iterator<String> it = files.iterator();
-				if (it.hasNext()) {
-					for (String filename = it.next(); it.hasNext(); filename = it.next()) {
-						parseFile(Data.constructData(args[0], filename), d);
-					}
-				}
+			Iterator<String> it = files.iterator();
+			while (it.hasNext()) {
+				String filename = it.next();
+				parseFile(InputData.constructData(args[0], filename), d);
 			}
+
 		}
 		d.close();
-		// System.out.print(new
-		// PidginConversationLog("/home/jimmy/.purple/logs/msn/jimmyken793@hotmail.com/pe19900829@hotmail.com/2010-06-08.010021+0800CST.html").getData());
-		System.out.println("Done");
+	}
+
+	public static void parseFile(InputData inputData, Database d) throws IOException, ClassNotFoundException, SQLException {
+
+		String f = inputData.getData();
+		System.out.println(f.length() + "\t" + inputData.getName());
+		parseString(f, d);
 	}
 
 	public static void parseString(String dataString, Database d) throws IOException, ClassNotFoundException, SQLException {
@@ -70,12 +74,5 @@ public class DataScanner {
 				}
 			}
 		}
-	}
-
-	public static void parseFile(Data file, Database d) throws IOException, ClassNotFoundException, SQLException {
-
-		String f = file.getData();
-		System.out.println(f.length() + "\t" + file.getName());
-		parseString(f, d);
 	}
 }
