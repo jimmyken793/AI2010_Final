@@ -1,6 +1,5 @@
 package idv.jimmyken793.aiproj;
 
-import idv.jimmyken793.aiproj.data.Data;
 import idv.jimmyken793.aiproj.data.InputData;
 import idv.jimmyken793.aiproj.database.Database;
 import idv.jimmyken793.io.FileIO;
@@ -25,15 +24,22 @@ public class DataScanner {
 	 * @throws SQLException
 	 */
 	public static void main(String[] args) throws IOException, ClassNotFoundException, SQLException {
-		if (args.length <= 1)
+		if (args.length ==0)
 			return;
+		
 		Database d = new Database();
-		for (int i = 1; i < args.length; i++) {
+		String className="Data";
+		for (int i = 0; i < args.length; i++) {
+			if(args[i].charAt(0)=='-'){
+				className=args[i].substring(1, args[i].length());
+				System.out.println("Changed into "+className+" mode");
+				continue;
+			}
 			ArrayList<String> files = FileIO.FileList(args[i]);
 			Iterator<String> it = files.iterator();
 			while (it.hasNext()) {
 				String filename = it.next();
-				parseFile(InputData.constructData(args[0], filename), d);
+				parseFile(InputData.constructData(className, filename), d);
 			}
 
 		}
