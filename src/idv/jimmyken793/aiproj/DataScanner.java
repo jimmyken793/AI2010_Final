@@ -25,6 +25,7 @@ public class DataScanner {
 	 */
 	public static void main(String[] args) throws IOException, ClassNotFoundException, SQLException {
 		if (args.length == 0) {
+			System.out.println();
 			System.out.println("Usage:");
 			System.out.println("java -jar Datascanner.jar -Data_Mode Data_path_list [-Data_Mode Data_path_list]");
 			System.out.println("Data modes:");
@@ -33,6 +34,7 @@ public class DataScanner {
 			System.out.println("MsnXmlLog : MSN Conversation Log(XML Format)");
 			System.out.println("UdnNews : UDN News page");
 			System.out.println("Data : Raw data");
+			System.out.println();
 			return;
 		}
 
