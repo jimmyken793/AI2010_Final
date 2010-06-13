@@ -10,7 +10,7 @@
     <target name="compile" depends="prepare">
         <javac srcdir="${src.dir}" destdir="${build.dir}">
             <classpath>
-                <pathelement location="../Library/Library.jar"/>
+                <pathelement location="lib/Library.jar"/>
             </classpath>
         </javac>
     </target>
@@ -18,6 +18,7 @@
         <jar destfile="DataScanner.jar" basedir="build/classes">
             <zipfileset src="../Library/Library.jar"/>
             <zipfileset src="lib/sqlitejdbc-v056.jar"/>
+            <zipfileset src="lib/Library.jar"/>
             <manifest>
                 <attribute name="Main-Class" value="idv.jimmyken793.aiproj.DataScanner"/>
             </manifest>
