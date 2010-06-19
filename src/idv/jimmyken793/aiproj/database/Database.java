@@ -11,12 +11,20 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Map.Entry;
+
 /**
  * 
  * @author jimmy
- *
+ * 
  */
 public class Database {
+
+	protected Connection connection;
+	protected Statement statement;
+	private CounterCache count2;
+	private CounterCache count3;
+	private CounterCache countS;
+
 	private class CounterCache {
 		String tableName;
 		private Statement statement;
@@ -26,6 +34,14 @@ public class Database {
 		private HashSet<String> insertion = new HashSet<String>();
 
 		private HashMap<String, Integer> increment = new HashMap<String, Integer>();
+		private HashMap<String, Integer> base = new HashMap<String, Integer>();
+
+		public int getData(String key) {
+			if (!existed_word.contains(key)) {
+				return 0;
+			}
+			return base.get(key) + increment.get(key);
+		}
 
 		public CounterCache(String table, Connection connection) throws SQLException {
 			statement = connection.createStatement();
@@ -37,18 +53,24 @@ public class Database {
 			increData = connection.prepareStatement("UPDATE " + tableName + " SET count = count+? WHERE str = ?;");
 			ResultSet rs = statement.executeQuery("select * from " + tableName + ";");
 			while (rs.next()) {
-				existed_word.add(rs.getString("str"));
-				increment.put(rs.getString("str"), 0);
+				existed_word.add(rs.getString(2));
+				increment.put(rs.getString(2), 0);
+				base.put(rs.getString(2), rs.getInt(1));
 			}
 		}
 
 		public void addCount(String id) {
+			addCount(id, 1);
+		}
+
+		public void addCount(String id, int count) {
 			if (!existed_word.contains(id)) {
 				insertion.add(id);
-				increment.put(id, 1);
+				increment.put(id, count);
 				existed_word.add(id);
+				base.put(id, 0);
 			} else {
-				increment.put(id, increment.get(id) + 1);
+				increment.put(id, increment.get(id) + count);
 			}
 		}
 
@@ -92,12 +114,18 @@ public class Database {
 			increData.executeBatch();
 		}
 	}
-	protected Connection connection;
-	protected Statement statement;
-	private CounterCache count2;
-	private CounterCache count3;
 
-	private CounterCache countS;
+	public int getData2(String key) {
+		return count2.getData(key);
+	}
+
+	public int getData3(String key) {
+		return count2.getData(key);
+	}
+
+	public int getDataS(String key) {
+		return count2.getData(key);
+	}
 
 	public Database() throws ClassNotFoundException, SQLException {
 		Class.forName("org.sqlite.JDBC");

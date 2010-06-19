@@ -23,8 +23,12 @@ public class UdnNews extends InputData {
 		Pattern p = Pattern.compile("window\\.location\\.href=\"([^\"]+jsp[^\"]+)\";");
 		Matcher m = p.matcher(file);
 		if (m.find()) {
-			String efile = getUrl(m.group(1), "Big5");
-			out = parseFile(efile);
+			try {
+				String efile = getUrl(m.group(1), "Big5");
+				out = parseFile(efile);
+			} catch (IOException e) {
+				System.out.println("Download failed");
+			}
 		}
 		out += " " + parseFile(file);
 
