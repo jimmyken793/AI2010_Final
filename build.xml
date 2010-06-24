@@ -33,6 +33,15 @@
                 <attribute name="Main-Class" value="idv.jimmyken793.aiproj.MainWindow"/>
             </manifest>
         </jar>
+        <jar destfile="Main-win32.jar" basedir="build/classes">
+            <zipfileset src="../Library/Library.jar"/>
+            <zipfileset src="lib/sqlitejdbc-v056.jar"/>
+            <zipfileset src="lib/Library.jar"/>
+            <zipfileset src="lib/swt-windows-i386.jar"/>
+            <manifest>
+                <attribute name="Main-Class" value="idv.jimmyken793.aiproj.MainWindow"/>
+            </manifest>
+        </jar>
     </target>
     
     <target name="run" depends="jar">
