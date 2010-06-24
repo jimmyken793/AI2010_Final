@@ -11,7 +11,7 @@
         <javac srcdir="${src.dir}" destdir="${build.dir}">
             <classpath>
                 <pathelement location="lib/Library.jar"/>
-                <pathelement location="lib/swt.jar"/>
+                <pathelement location="lib/swt-linux-i386-gtk.jar"/>
             </classpath>
         </javac>
     </target>
@@ -20,7 +20,6 @@
             <zipfileset src="../Library/Library.jar"/>
             <zipfileset src="lib/sqlitejdbc-v056.jar"/>
             <zipfileset src="lib/Library.jar"/>
-            <zipfileset src="lib/swt.jar"/>
             <manifest>
                 <attribute name="Main-Class" value="idv.jimmyken793.aiproj.DataScanner"/>
             </manifest>
@@ -29,7 +28,7 @@
             <zipfileset src="../Library/Library.jar"/>
             <zipfileset src="lib/sqlitejdbc-v056.jar"/>
             <zipfileset src="lib/Library.jar"/>
-            <zipfileset src="lib/swt.jar"/>
+            <zipfileset src="lib/swt-linux-i386-gtk.jar"/>
             <manifest>
                 <attribute name="Main-Class" value="idv.jimmyken793.aiproj.MainWindow"/>
             </manifest>
