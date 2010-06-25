@@ -30,32 +30,33 @@ public class Database {
 		private Statement statement;
 		private PreparedStatement insertData;
 		private PreparedStatement increData;
-		private HashSet<String> existed_word = new HashSet<String>();
 		private HashSet<String> insertion = new HashSet<String>();
 
-		private HashMap<String, Integer> increment = new HashMap<String, Integer>();
-		private HashMap<String, Integer> base = new HashMap<String, Integer>();
+		private HashMap<String, Integer> keySymbol = new HashMap<String, Integer>();
+		private HashMap<Integer, String> idKey = new HashMap<Integer, String>();
+		private HashMap<Integer, Integer> increment = new HashMap<Integer, Integer>();
+		private HashMap<Integer, Integer> base = new HashMap<Integer, Integer>();
 
 		public int getData(String key) {
-			if (!existed_word.contains(key)) {
+			if (!keySymbol.containsKey(key)) {
 				return 0;
 			}
-			return base.get(key) + increment.get(key);
+			int id = keySymbol.get(key);
+			return base.get(id) + increment.get(id);
 		}
 
 		public CounterCache(String table, Connection connection) throws SQLException {
 			statement = connection.createStatement();
 			tableName = table;
-			statement.executeUpdate("CREATE TABLE IF NOT EXISTS Data2 (count INTEGER,str TEXT PRIMARY KEY)");
-			statement.executeUpdate("CREATE TABLE IF NOT EXISTS Data3 (count INTEGER,str TEXT PRIMARY KEY)");
-			statement.executeUpdate("CREATE TABLE IF NOT EXISTS DataS (count INTEGER,str TEXT PRIMARY KEY)");
 			insertData = connection.prepareStatement("INSERT OR REPLACE INTO " + tableName + "(count,str) VALUES (?,?);");
 			increData = connection.prepareStatement("UPDATE " + tableName + " SET count = count+? WHERE str = ?;");
 			ResultSet rs = statement.executeQuery("select * from " + tableName + ";");
 			while (rs.next()) {
-				existed_word.add(rs.getString(2));
-				increment.put(rs.getString(2), 0);
-				base.put(rs.getString(2), rs.getInt(1));
+				int id = keySymbol.size();
+				keySymbol.put(rs.getString(2), id);
+				idKey.put(id, rs.getString(2));
+				increment.put(id, 0);
+				base.put(id, rs.getInt(1));
 			}
 		}
 
@@ -64,13 +65,16 @@ public class Database {
 		}
 
 		public void addCount(String id, int count) {
-			if (!existed_word.contains(id)) {
+			if (!keySymbol.containsKey(id)) {
+
+				int kid = keySymbol.size();
+				keySymbol.put(id, kid);
+				idKey.put(kid, id);
+				increment.put(kid, count);
+				base.put(kid, 0);
 				insertion.add(id);
-				increment.put(id, count);
-				existed_word.add(id);
-				base.put(id, 0);
 			} else {
-				increment.put(id, increment.get(id) + count);
+				increment.put(keySymbol.get(id), increment.get(keySymbol.get(id)) + count);
 			}
 		}
 
@@ -81,10 +85,11 @@ public class Database {
 				int c = 0;
 				if (it.hasNext()) {
 					for (String i = it.next(); it.hasNext(); i = it.next()) {
-						insertData.setInt(1, increment.get(i));
+						int key = keySymbol.get(i);
+						insertData.setInt(1, increment.get(key));
 						insertData.setString(2, i);
 						insertData.addBatch();
-						increment.put(i, 0);
+						increment.put(key, 0);
 						c++;
 					}
 					insertion.clear();
@@ -93,15 +98,15 @@ public class Database {
 			}
 			insertData.executeBatch();
 			{
-				Set<Entry<String, Integer>> ent = increment.entrySet();
+				Set<Entry<Integer, Integer>> ent = increment.entrySet();
 				System.out.println("Processing " + ent.size() + " UPDATE entries");
-				Iterator<Entry<String, Integer>> it = ent.iterator();
+				Iterator<Entry<Integer, Integer>> it = ent.iterator();
 				int c = 0;
 				if (it.hasNext()) {
-					for (Entry<String, Integer> i = it.next(); it.hasNext(); i = it.next()) {
+					for (Entry<Integer, Integer> i = it.next(); it.hasNext(); i = it.next()) {
 						if (i.getValue() != 0) {
 							increData.setInt(1, i.getValue());
-							increData.setString(2, i.getKey());
+							increData.setString(2, idKey.get(i.getKey()));
 							increData.addBatch();
 							increment.put(i.getKey(), 0);
 							c++;
@@ -120,11 +125,11 @@ public class Database {
 	}
 
 	public int getData3(String key) {
-		return count2.getData(key);
+		return count3.getData(key);
 	}
 
 	public int getDataS(String key) {
-		return count2.getData(key);
+		return countS.getData(key);
 	}
 
 	public Database() throws ClassNotFoundException, SQLException {

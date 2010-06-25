@@ -33,6 +33,15 @@
                 <attribute name="Main-Class" value="idv.jimmyken793.aiproj.MainWindow"/>
             </manifest>
         </jar>
+        <jar destfile="Main-ia64.jar" basedir="build/classes">
+            <zipfileset src="../Library/Library.jar"/>
+            <zipfileset src="lib/sqlitejdbc-v056.jar"/>
+            <zipfileset src="lib/Library.jar"/>
+            <zipfileset src="lib/swt-linux-ia64-gtk.jar"/>
+            <manifest>
+                <attribute name="Main-Class" value="idv.jimmyken793.aiproj.MainWindow"/>
+            </manifest>
+        </jar>
         <jar destfile="Main-win32.jar" basedir="build/classes">
             <zipfileset src="../Library/Library.jar"/>
             <zipfileset src="lib/sqlitejdbc-v056.jar"/>
@@ -45,9 +54,7 @@
     </target>
     
     <target name="run" depends="jar">
-        <java jar="DataScanner.jar" fork="true">
-            <arg value="PidginLog /home/jimmy/.purple/log/"/>
-        </java>
+        <java jar="Main.jar" fork="true"/>
     </target>
     <target name="clean" description="Removes previous build">
         <delete verbose="true">

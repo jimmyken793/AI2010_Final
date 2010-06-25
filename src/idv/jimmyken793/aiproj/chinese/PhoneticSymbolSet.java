@@ -232,7 +232,7 @@ public class PhoneticSymbolSet {
 		case 'ㄡ':
 			return '.';
 		case 'ㄥ':
-			return '/';
+			return '=';
 		case 'ㄢ':
 			return '0';
 		case 'ㄅ':
@@ -254,7 +254,7 @@ public class PhoneticSymbolSet {
 		case 'ㄞ':
 			return '9';
 		case 'ㄤ':
-			return ':';
+			return ';';
 		case 'ㄇ':
 			return 'a';
 		case 'ㄖ':
